@@ -2,6 +2,7 @@ import time
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from tqdm import tqdm
 
 torch.manual_seed(42)
 
@@ -189,7 +190,7 @@ def estimate_loss():
 optimizer = torch.optim.AdamW(m.parameters(), lr=learning_rate)
 
 start_time = time.time()
-for steps in range(training_steps):
+for steps in tqdm(range(training_steps)):
     xb, yb = get_batch('train')
 
     logits, loss = m(xb, yb)
@@ -200,7 +201,7 @@ for steps in range(training_steps):
     if steps % eval_interval == 0:
         losses = estimate_loss()
         time_per_step = (time.time() - start_time) / steps if steps > 0 else 0
-        print(f"steps {steps}/{training_steps} Training loss: {losses['train']}, val loss: {losses['val']} | time per step: {time_per_step}")
+        tqdm.write(f"steps {steps}/{training_steps} Training loss: {losses['train']}, val loss: {losses['val']} | time per step: {time_per_step}")
 
 
 # generation

@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -187,6 +188,7 @@ def estimate_loss():
 # training
 optimizer = torch.optim.AdamW(m.parameters(), lr=learning_rate)
 
+start_time = time.time()
 for steps in range(training_steps):
     xb, yb = get_batch('train')
 
@@ -197,7 +199,8 @@ for steps in range(training_steps):
 
     if steps % eval_interval == 0:
         losses = estimate_loss()
-        print(f"steps {steps}/{training_steps} Training loss: {losses['train']}, val loss: {losses['val']}")
+        time_per_step = (time.time() - start_time) / steps if steps > 0 else 0
+        print(f"steps {steps}/{training_steps} Training loss: {losses['train']}, val loss: {losses['val']} | time per step: {time_per_step}")
 
 
 # generation
